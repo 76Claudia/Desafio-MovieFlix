@@ -12,7 +12,7 @@ public class GenreDTO {
     private Long id;
     private String name;
 	
-    private List<MovieCardDTO> movies = new ArrayList<>();
+    private List<Movie> movies = new ArrayList<>();
     
     public GenreDTO() {
     }
@@ -27,11 +27,6 @@ public class GenreDTO {
     	name = entity.getName();	
     }
     
-    public GenreDTO(Genre entity, Set<Movie> movies) {
-    	this(entity);
-    	movies.forEach(cat -> this.movies.add(new MovieCardDTO(cat)));
-    }
-
     public Long getId() {
         return id;
     }
@@ -47,13 +42,14 @@ public class GenreDTO {
     public void setName(String name) {
         this.name = name;
     }
+
+	public List<Movie> getMovies() {
+		return movies;
+	}
+
+	public void setMovies(List<Movie> movies) {
+		this.movies = movies;
+	}
     
-    public List<MovieCardDTO> getMovies(){
-    	return movies;
-    }
-    
-    public void setMovies(List<MovieCardDTO> movies) {
-    	this.movies = movies;
-    	
-    }
+   
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.devsuperior.movieflix.dto.GenreDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,6 +53,7 @@ public class Movie {
         this.synopsis = synopsis;
         this.genre = genre;
     }
+
 
     public Long getId() {
         return id;

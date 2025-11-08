@@ -40,12 +40,13 @@ public class GenreController {
 		Page<GenreDTO> list = service.findAllPaged(pageable);
 		return ResponseEntity.ok().body(list);	
 	}
-
+	@PreAuthorize("hasAnyRolr('ROLE_VISITOR','ROLE_MEMBER')")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<GenreDTO> findById(@PathVariable Long id) {
 		GenreDTO dto = service.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}
+	
 	
 	@PreAuthorize("hasAnyRole('ROLE_VISITOR', 'ROLE_MEMBER')")
 	@PostMapping

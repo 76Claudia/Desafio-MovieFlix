@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.movieflix.dto.MovieDetailsDTO;
 import com.devsuperior.movieflix.entities.Genre;
 import com.devsuperior.movieflix.entities.Movie;
+import com.devsuperior.movieflix.repositories.GenreRepository;
 import com.devsuperior.movieflix.repositories.MovieRepository;
 import com.devsuperior.movieflix.services.exceptions.DatabaseException;
 import com.devsuperior.movieflix.services.exceptions.ResourceNotFoundException;
@@ -25,8 +26,9 @@ public class MovieService {
 	@Autowired
 	private MovieRepository repository;
 	
+	@Autowired
+	private GenreRepository genreRepository;
 	
-
 	@Transactional(readOnly = true)
 	public Page<MovieDetailsDTO> findAllPaged(Pageable pageable) {
 		Page<Movie>	page = repository.findAll(pageable);
@@ -39,7 +41,7 @@ public class MovieService {
 		Movie entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new MovieDetailsDTO(entity);
 	}
-
+	
 	@Transactional
 	public MovieDetailsDTO insert (MovieDetailsDTO dto) {
 		Movie entity = new Movie();
@@ -47,7 +49,7 @@ public class MovieService {
 		entity.setYear(dto.getYear());
 		entity.setImgUrl(dto.getImgUrl());
 		entity.setSynopsis(dto.getSynopsis());
-		entity.setGenre(new Genre(dto.getId(),null));
+		entity.setGenre(new Genre(dto.getId(), null));
 		
 		entity = repository.save(entity);
 		return new MovieDetailsDTO(entity);

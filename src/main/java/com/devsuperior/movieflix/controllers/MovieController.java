@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,10 +34,11 @@ public class MovieController {
 	@PreAuthorize("hasAnyRole('ROLE_VISITOR', 'ROLE_MEMBER')")
 	@GetMapping
 	public ResponseEntity<Page<MovieDetailsDTO>> findAll(Pageable pageable){
-		Page<MovieDetailsDTO> page = service.findAllPaged(pageable);
+		Page<MovieDetailsDTO> page  = service.findAllPaged(pageable);
 		return ResponseEntity.ok().body(page);
 		
 	}
+	
 	@PreAuthorize("hasAnyRole('ROLE_VISITOR', 'ROLE_MEMBER')")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<MovieDetailsDTO> findById(@PathVariable Long id){
@@ -44,7 +46,6 @@ public class MovieController {
 		return ResponseEntity.ok().body(dto);
 	}
 
-	
 	@PreAuthorize("hasAnyRole('ROLE_VISITOR', 'ROLE_MEMBER')")
 	@PostMapping
 	public ResponseEntity<MovieDetailsDTO> insert(@Valid @RequestBody MovieDetailsDTO dto){

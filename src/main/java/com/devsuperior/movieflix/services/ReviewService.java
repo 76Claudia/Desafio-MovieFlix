@@ -11,8 +11,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.movieflix.dto.ReviewDTO;
+import com.devsuperior.movieflix.entities.Movie;
 import com.devsuperior.movieflix.entities.Review;
+import com.devsuperior.movieflix.entities.User;
+import com.devsuperior.movieflix.repositories.MovieRepository;
 import com.devsuperior.movieflix.repositories.ReviewRepository;
+import com.devsuperior.movieflix.repositories.RoleRepository;
+import com.devsuperior.movieflix.repositories.UserRepository;
 import com.devsuperior.movieflix.services.exceptions.DatabaseException;
 import com.devsuperior.movieflix.services.exceptions.ResourceNotFoundException;
 
@@ -24,12 +29,23 @@ public class ReviewService {
 	@Autowired
 	private ReviewRepository repository;
 	
+	@Autowired 
+	private MovieRepository movieRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	
+	@Autowired
+	public AuthService authService;
+	
+	
 	@Transactional(readOnly = true)
 	public Page<ReviewDTO> findAllPaged(Pageable pageable){
 		Page<Review> list = repository.findAll(pageable);
 		return list.map(x -> new ReviewDTO(x));
 	}
-	
+	 
 	@Transactional(readOnly = true)
 	public ReviewDTO findById(Long id) {
 		Optional<Review> obj = repository.findById(id);
@@ -40,8 +56,13 @@ public class ReviewService {
 	@Transactional
 	public ReviewDTO insert (ReviewDTO dto) {
 		Review entity = new Review();
-		
+		Movie movie = movieRepository.getReferenceById(dto.getMovieId());
+		User user = authService.authenticated();
+	
 		entity.setText(dto.getText());
+		entity.setMovie(movie);
+		entity.setUser(user);
+		
 		entity = repository.save(entity);
 		return new ReviewDTO(entity);
 		

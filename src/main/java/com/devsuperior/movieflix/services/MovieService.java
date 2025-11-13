@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.movieflix.dto.MovieDetailsDTO;
 import com.devsuperior.movieflix.entities.Genre;
 import com.devsuperior.movieflix.entities.Movie;
+import com.devsuperior.movieflix.entities.User;
 import com.devsuperior.movieflix.repositories.GenreRepository;
 import com.devsuperior.movieflix.repositories.MovieRepository;
 import com.devsuperior.movieflix.services.exceptions.DatabaseException;
@@ -29,6 +30,9 @@ public class MovieService {
 	@Autowired
 	private GenreRepository genreRepository;
 	
+	@Autowired
+	public AuthService authService;
+	
 	@Transactional(readOnly = true)
 	public Page<MovieDetailsDTO> findAllPaged(Pageable pageable) {
 		Page<Movie>	page = repository.findAll(pageable);
@@ -41,15 +45,25 @@ public class MovieService {
 		Movie entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new MovieDetailsDTO(entity);
 	}
+	@Transactional(readOnly = true) 
+	public Page<MovieDetailsDTO> findByGenre(Long id, String name, Pageable pageable) {
+		Page<Movie> page = repository.findByGenre(id,  name, pageable);
+		return page.map(x-> new MovieDetailsDTO(x));
+	}
 	
 	@Transactional
 	public MovieDetailsDTO insert (MovieDetailsDTO dto) {
 		Movie entity = new Movie();
+		Genre genre = genreRepository.getReferenceById(dto.getGenre().getId());
+		User user =authService.authenticated();
+		
 		entity.setTitle(dto.getTitle());
+		entity.setSubTitle(dto.getSubTitle());
 		entity.setYear(dto.getYear());
 		entity.setImgUrl(dto.getImgUrl());
 		entity.setSynopsis(dto.getSynopsis());
 		entity.setGenre(new Genre(dto.getId(), null));
+		
 		
 		entity = repository.save(entity);
 		return new MovieDetailsDTO(entity);
@@ -60,6 +74,7 @@ public class MovieService {
 		try {
 			Movie entity = repository.getReferenceById(id);
 			entity.setTitle(dto.getTitle());
+			entity.setSubTitle(dto.getSubTitle());
 			entity.setYear(dto.getYear());
 			entity.setImgUrl(dto.getImgUrl());
 			entity.setSynopsis(dto.getSynopsis());

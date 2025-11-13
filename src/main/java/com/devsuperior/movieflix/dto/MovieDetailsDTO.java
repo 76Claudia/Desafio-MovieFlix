@@ -19,7 +19,7 @@ public class MovieDetailsDTO {
     
     public MovieDetailsDTO(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis,
 			GenreDTO genre) {
-		super();
+		
 		this.id = id;
 		this.title = title;
 		this.subTitle = subTitle;
